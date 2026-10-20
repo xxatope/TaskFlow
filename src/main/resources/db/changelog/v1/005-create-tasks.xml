@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="005-create-tasks" author="taskflow">
+        <createTable tableName="tasks">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="status" type="VARCHAR(30)" defaultValue="DRAFT">
+                <!-- DRAFT, IN_PROGRESS, PENDING_APPROVAL, APPROVED, REJECTED, DONE -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="VARCHAR(10)" defaultValue="MEDIUM">
+                <!-- LOW, MEDIUM, HIGH, CRITICAL -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="due_date" type="TIMESTAMP"/>
+            <column name="creator_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_id" type="BIGINT"/>
+            <column name="organization_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="tasks" baseColumnNames="creator_id"
+                constraintName="fk_tasks_creator"
+                referencedTableName="users" referencedColumnNames="id"
+                onDelete="RESTRICT"/>
+
+        <addForeignKeyConstraint
+                baseTableName="tasks" baseColumnNames="assignee_id"
+                constraintName="fk_tasks_assignee"
+                referencedTableName="users" referencedColumnNames="id"
+                onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint
+                baseTableName="tasks" baseColumnNames="organization_id"
+                constraintName="fk_tasks_organization"
+                referencedTableName="organizations" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <createIndex tableName="tasks" indexName="idx_tasks_status">
+            <column name="status"/>
+        </createIndex>
+        <createIndex tableName="tasks" indexName="idx_tasks_assignee">
+            <column name="assignee_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

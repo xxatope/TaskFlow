@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: TaskFlow
+
+  # ===== DataSource (PostgreSQL) =====
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskflow
+    username: taskflow_user
+    password: taskflow_pass
+    driver-class-name: org.postgresql.Driver
+
+  # ===== JPA / Hibernate =====
+  jpa:
+    hibernate:
+      ddl-auto: validate        # Liquibase управляет схемой, Hibernate только проверяет
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # ===== Liquibase =====
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+  # ===== Redis =====
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+
+  # ===== Kafka =====
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: taskflow-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "ru.edu.taskflow.event"
+
+# ===== Swagger / OpenAPI =====
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ===== JWT settings =====
+app:
+  jwt:
+    secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"  # 256-bit hex key
+    access-token-expiration: 900000      # 15 минут в миллисекундах
+    refresh-token-expiration: 604800000  # 7 дней в миллисекундах
+
+# ===== Kafka topics =====
+  kafka:
+    topic:
+      task-events: task-events
+
+# ===== Logging =====
+logging:
+  level:
+    ru.edu.taskflow: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
