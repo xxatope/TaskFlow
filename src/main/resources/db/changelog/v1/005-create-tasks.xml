@@ -26,9 +26,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="assignee_id" type="BIGINT"/>
-            <column name="organization_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()">
                 <constraints nullable="false"/>
             </column>
@@ -48,12 +45,6 @@
                 constraintName="fk_tasks_assignee"
                 referencedTableName="users" referencedColumnNames="id"
                 onDelete="SET NULL"/>
-
-        <addForeignKeyConstraint
-                baseTableName="tasks" baseColumnNames="organization_id"
-                constraintName="fk_tasks_organization"
-                referencedTableName="organizations" referencedColumnNames="id"
-                onDelete="CASCADE"/>
 
         <createIndex tableName="tasks" indexName="idx_tasks_status">
             <column name="status"/>

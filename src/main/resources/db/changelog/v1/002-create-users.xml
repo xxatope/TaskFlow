@@ -18,7 +18,6 @@
             <column name="full_name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="BIGINT"/>
             <column name="role_id" type="BIGINT"/>
             <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
                 <constraints nullable="false"/>
@@ -27,14 +26,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
-        <addForeignKeyConstraint
-                baseTableName="users"
-                baseColumnNames="organization_id"
-                constraintName="fk_users_organization"
-                referencedTableName="organizations"
-                referencedColumnNames="id"
-                onDelete="SET NULL"/>
 
         <addForeignKeyConstraint
                 baseTableName="users"

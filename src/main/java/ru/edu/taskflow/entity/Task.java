@@ -47,8 +47,4 @@ public class Task {
     private User assignee;
 
 
-    @ManyToOne
-    @JoinColumn(name = "organization_id")
-    private Organization organization;
-
 }
