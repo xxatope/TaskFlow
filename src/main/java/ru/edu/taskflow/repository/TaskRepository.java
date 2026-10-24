@@ -7,16 +7,21 @@ import ru.edu.taskflow.entity.Task;
 import ru.edu.taskflow.entity.TaskStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-     @EntityGraph(attributePaths = {"creator", "assignee"})
-     List<Task> findAllByStatus(TaskStatus status);
+    @Override
+    @EntityGraph(attributePaths = {"creator", "assignee"})
+    Optional<Task> findById(Long id);
 
-     @EntityGraph(attributePaths = {"creator", "assignee"})
-     List<Task> findAllByAssigneeId(Long assigneeId);
+    @EntityGraph(attributePaths = {"creator", "assignee"})
+    List<Task> findAllByStatus(TaskStatus status);
 
-     @EntityGraph(attributePaths = {"creator", "assignee"})
-     List<Task> findAllByCreatorId(Long creatorId);
+    @EntityGraph(attributePaths = {"creator", "assignee"})
+    List<Task> findAllByAssigneeId(Long assigneeId);
+
+    @EntityGraph(attributePaths = {"creator", "assignee"})
+    List<Task> findAllByCreatorId(Long creatorId);
 }
