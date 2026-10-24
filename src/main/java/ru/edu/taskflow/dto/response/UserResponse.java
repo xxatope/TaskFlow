@@ -21,7 +21,6 @@ public class UserResponse {
 
     private Long id;
 
-    @NotBlank
     private String fullName;
 
     private String email;

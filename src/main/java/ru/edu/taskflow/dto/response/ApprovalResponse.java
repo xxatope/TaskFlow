@@ -24,7 +24,7 @@ public class ApprovalResponse {
     private ApprovalStatus status;
     private String comment;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime resolvedAt;
 
 
 

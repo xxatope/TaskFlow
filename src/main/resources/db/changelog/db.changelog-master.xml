@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
 
-    <include file="db/changelog/v1/002-create-users.xml"/>
     <include file="db/changelog/v1/003-create-roles.xml"/>
+    <include file="db/changelog/v1/002-create-users.xml"/>
     <include file="db/changelog/v1/005-create-tasks.xml"/>
     <include file="db/changelog/v1/006-create-task-comments.xml"/>
     <include file="db/changelog/v1/007-create-approvals.xml"/>

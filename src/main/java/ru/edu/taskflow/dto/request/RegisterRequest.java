@@ -7,8 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.edu.taskflow.entity.Role;
-import ru.edu.taskflow.entity.RoleName;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,15 +16,15 @@ public class RegisterRequest {
 
     @Email
     @NotBlank
+    @Size(max = 256)
     private String email;
 
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 72)
     private String password;
 
     @NotBlank
+    @Size(max = 255)
     private String fullName;
-
-    private RoleName roleName;
 
 }
