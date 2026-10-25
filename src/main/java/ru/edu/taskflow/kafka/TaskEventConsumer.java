@@ -2,11 +2,11 @@ package ru.edu.taskflow.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import ru.edu.taskflow.entity.AuditLog;
 import ru.edu.taskflow.event.TaskEvent;
+import ru.edu.taskflow.mapper.AuditLogMapper;
 import ru.edu.taskflow.repository.AuditLogRepository;
 
 @Component
@@ -15,6 +15,7 @@ import ru.edu.taskflow.repository.AuditLogRepository;
 public class TaskEventConsumer {
 
     private final AuditLogRepository auditLogRepository;
+    private final AuditLogMapper auditLogMapper;
 
     @KafkaListener(
             topics = "${app.kafka.topic.task-events}",
@@ -24,13 +25,7 @@ public class TaskEventConsumer {
 
         log.info("Received event: {}", event);
 
-        AuditLog auditLog = new AuditLog();
-        auditLog.setEntityType("TASK");
-        auditLog.setEntityId(event.getTaskId());
-        auditLog.setAction(event.getEventType().name());
-        auditLog.setActorId(event.getActorId());
-        auditLog.setDetails(event.getDetails());
-        auditLog.setOccurredAt(event.getTimestamp());
+        AuditLog auditLog = auditLogMapper.toEntity(event);
 
         auditLogRepository.save(auditLog);
 
