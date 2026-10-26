@@ -1,6 +1,5 @@
 package ru.edu.taskflow.service;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.control.MappingControl;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.edu.taskflow.dto.request.LoginRequest;
@@ -16,7 +15,6 @@ import ru.edu.taskflow.repository.UserRepository;
 import ru.edu.taskflow.security.JwtService;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UserMapper userMapper;
@@ -25,47 +23,54 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
 
-    public UserResponse register(RegisterRequest request){
+    public AuthService(UserMapper userMapper,
+                       UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       RoleRepository roleRepository,
+                       JwtService jwtService) {
+        this.userMapper = userMapper;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+        this.jwtService = jwtService;
+    }
 
-        if(userRepository.existsByEmail(request.getEmail())){
+    public UserResponse register(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already in use");
         }
 
         User user = userMapper.toEntity(request);
-
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
 
         Role defaultRole = roleRepository.findByName(RoleName.EMPLOYEE)
-                        .orElseThrow(() -> new IllegalStateException("Default role EMPLOYEE not found"));
+                .orElseThrow(() -> new IllegalStateException("Default role EMPLOYEE not found"));
 
         user.setRole(defaultRole);
-
         userRepository.save(user);
 
         return userMapper.toResponse(user);
-
     }
-    public AuthResponse login (LoginRequest loginRequest){
-        User user = userRepository.findByEmail(loginRequest.getEmail())
+
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new IllegalArgumentException("Incorrect email or password"));
-        if(!passwordEncoder.matches(loginRequest.getPassword(),user.getPasswordHash() )){
+
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPasswordHash())) {
             throw new IllegalArgumentException("Incorrect email or password");
         }
 
-        if (!user.isEnabled()){
+        if (!user.isEnabled()) {
             throw new IllegalStateException("Account is disabled");
         }
 
         String token = jwtService.generateToken(user);
 
-        return AuthResponse.builder()
-                .accessToken(token)
-                .tokenType("Bearer")
-                .email(user.getEmail())
-                .roleName(user.getRole().getName())
-                .build();
-
+        return new AuthResponse(
+                token,
+                "Bearer",
+                user.getEmail(),
+                user.getRole().getName()
+        );
     }
-
-
 }

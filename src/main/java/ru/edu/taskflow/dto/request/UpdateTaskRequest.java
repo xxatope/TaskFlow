@@ -2,30 +2,20 @@ package ru.edu.taskflow.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.edu.taskflow.entity.TaskPriority;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UpdateTaskRequest {
+public record UpdateTaskRequest(
+        @NotBlank
+        String title,
 
-    @NotBlank
-    private String title;
+        String description,
 
-    private String description;
+        @NotNull
+        TaskPriority priority,
 
-    @NotNull
-    private TaskPriority priority;
+        LocalDateTime dueDate,
 
-    private LocalDateTime dueDate;
-
-    private Long assigneeId;
-
-}
+        Long assigneeId
+) {}

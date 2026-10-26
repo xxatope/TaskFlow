@@ -3,31 +3,21 @@ package ru.edu.taskflow.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.edu.taskflow.entity.TaskPriority;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CreateTaskRequest {
+public record CreateTaskRequest(
+        @NotBlank
+        @Size(max = 255)
+        String title,
 
-    @NotBlank
-    @Size(max = 255)
-    private String title;
+        String description,
 
-    private String description;
+        @NotNull
+        TaskPriority priority,
 
-    @NotNull
-    private TaskPriority priority;
+        LocalDateTime dueDate,
 
-    private LocalDateTime dueDate;
-
-    private Long assigneeId;
-
-}
+        Long assigneeId
+) {}
