@@ -1,5 +1,6 @@
 package ru.edu.taskflow.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.edu.taskflow.dto.request.LoginRequest;
@@ -35,6 +36,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    @Transactional
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already in use");
@@ -52,6 +54,7 @@ public class AuthService {
         return userMapper.toResponse(user);
     }
 
+    @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new IllegalArgumentException("Incorrect email or password"));

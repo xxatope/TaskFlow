@@ -1,11 +1,7 @@
 package ru.edu.taskflow.security;
-
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.apache.naming.factory.SendMailFactory;
-import org.mapstruct.control.MappingControl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.edu.taskflow.entity.User;
