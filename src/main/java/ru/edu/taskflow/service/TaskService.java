@@ -1,5 +1,6 @@
 package ru.edu.taskflow.service;
 
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.edu.taskflow.dto.request.CreateTaskRequest;
@@ -8,6 +9,7 @@ import ru.edu.taskflow.dto.response.TaskResponse;
 import ru.edu.taskflow.entity.Task;
 import ru.edu.taskflow.entity.TaskStatus;
 import ru.edu.taskflow.entity.User;
+import ru.edu.taskflow.exception.ResourceNotFoundException;
 import ru.edu.taskflow.mapper.TaskMapper;
 import ru.edu.taskflow.repository.TaskRepository;
 import ru.edu.taskflow.repository.UserRepository;
@@ -30,7 +32,8 @@ public class TaskService {
     @Transactional
     public TaskResponse createTask(CreateTaskRequest createTaskRequest, String creatorEmail){
         User user = userRepository.findByEmail(creatorEmail)
-                .orElseThrow(() -> new RuntimeException("Creator not found"));
+                .orElseThrow(()
+                        -> new ResourceNotFoundException("Creator not found"));
         ru.edu.taskflow.entity.Task task = taskMapper.toTaskEntity(createTaskRequest);
         task.setCreator(user);
         task.setStatus(TaskStatus.DRAFT);
@@ -41,11 +44,12 @@ public class TaskService {
     @Transactional
     public TaskResponse updateTask(Long id,UpdateTaskRequest updateTaskRequest){
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new ResourceNotFoundException ("Task not found"));
         taskMapper.updateTaskFromDto(updateTaskRequest, task);
         if (updateTaskRequest.assigneeId() != null) {
             User assignee = userRepository.findById(updateTaskRequest.assigneeId())
-                    .orElseThrow(() -> new RuntimeException("Assignee not found"));
+                    .orElseThrow(()
+                            -> new ResourceNotFoundException ("Assignee not found"));
             task.setAssignee(assignee);
         }
         return taskMapper.toTaskResponse(taskRepository.save(task));
@@ -58,7 +62,8 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public TaskResponse getById(Long id){
-        Task task = taskRepository. findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        Task task = taskRepository. findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Not found"));
         return taskMapper.toTaskResponse(task);
     }
 

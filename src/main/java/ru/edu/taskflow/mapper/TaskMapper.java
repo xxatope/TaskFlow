@@ -14,6 +14,10 @@ public interface TaskMapper {
     @Mapping(target = "assignee", ignore = true)
     Task toTaskEntity(CreateTaskRequest createTaskRequest);
 
+    @Mapping(source = "creator.id", target = "creatorId")
+    @Mapping(source = "creator.fullName", target = "creatorName")
+    @Mapping(source = "assignee.id", target = "assigneeId")
+    @Mapping(source = "assignee.fullName", target = "assigneeName")
     TaskResponse toTaskResponse(Task task);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE )
