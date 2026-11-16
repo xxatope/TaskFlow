@@ -41,8 +41,8 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}")
-    public TaskResponse updateTask(@PathVariable Long id,@Valid @RequestBody UpdateTaskRequest updateTaskRequest){
-        return taskService.updateTask(id, updateTaskRequest);
+    public TaskResponse updateTask(@PathVariable Long id,@Valid @RequestBody UpdateTaskRequest updateTaskRequest, @AuthenticationPrincipal UserDetails userDetails){
+        return taskService.updateTask(id, updateTaskRequest, userDetails.getUsername());
     }
 
     @DeleteMapping("/{id}")
